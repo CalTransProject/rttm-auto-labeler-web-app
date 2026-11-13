@@ -123,6 +123,10 @@ export function AppShell() {
 					<button className='px-3 py-1.5 rounded-md bg-indigo-700 hover:bg-indigo-600 text-sm disabled:opacity-50' onClick={() => void finishExport()} disabled={!runOpened || isLoading}>
 						Finish / Export
 					</button>
+
+					<button className='px-3 py-1.5 rounded-md bg-amber-700 hover:bg-amber-600 text-sm disabled:opacity-50' disabled>
+						Apply Reference Object To All Frames
+					</button>
 				</div>
 			</div>
 
