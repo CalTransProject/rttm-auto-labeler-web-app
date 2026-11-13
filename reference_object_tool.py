@@ -1,128 +1,135 @@
+from typing import Iterable, Optional
 
-from dataclasses import asdict, dataclass
-from typing import Dict, Iterable, Optional, Tuple
-
-REFERENCE_OBJECT_CLASS = "Reference Object"
-REFERENCE_OBJECT_COLOR = "#FFD700"
-
-
-@dataclass
-class BoundingBox:
-    x: float
-    y: float
-    width: float
-    height: float
-
-    def __post_init__(self) -> None:
-        if self.width <= 0 or self.height <= 0:
-            raise ValueError("Bounding-box dimensions must be positive.")
-
-    def move(self, x: float, y: float) -> None:
-        self.x = x
-        self.y = y
-
-    def resize(self, width: float, height: float) -> None:
-        if width <= 0 or height <= 0:
-            raise ValueError("Width and height must be positive.")
-        self.width = width
-        self.height = height
-
-    def to_dict(self) -> Dict:
-        return asdict(self)
-
-
-@dataclass
-class ReferenceObject:
-    frame_id: str
-    bbox: BoundingBox
-    class_name: str = REFERENCE_OBJECT_CLASS
-    color: str = REFERENCE_OBJECT_COLOR
-
-    def to_dict(self) -> Dict:
-        return {
-            "frame_id": self.frame_id,
-            "class_name": self.class_name,
-            "color": self.color,
-            "bbox": self.bbox.to_dict(),
-        }
+from .reference_object import (
+    BoundingBox,
+    ReferenceObject
+)
 
 
 class ReferenceObjectTool:
-    """Draw and manage a reference-object bounding box."""
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        frame_id: str = "0",
+        dataset: str = "unknown"
+    ):
+        self.frame_id = str(frame_id)
+        self.dataset = dataset
         self.reference_object: Optional[ReferenceObject] = None
-        self._drag_start: Optional[Tuple[float, float]] = None
-
-    def start_drag(self, frame_id: str, x: float, y: float) -> None:
-        """Begin drawing a new box."""
-        self._drag_start = (x, y)
-        self.reference_object = ReferenceObject(
-            frame_id=frame_id,
-            bbox=BoundingBox(x, y, 1, 1),
-        )
-
-    def update_drag(self, x: float, y: float) -> None:
-        """Update the box while dragging."""
-        if self._drag_start is None or self.reference_object is None:
-            return
-
-        start_x, start_y = self._drag_start
-
-        left = min(start_x, x)
-        top = min(start_y, y)
-        width = max(abs(x - start_x), 1)
-        height = max(abs(y - start_y), 1)
-
-        self.reference_object.bbox = BoundingBox(
-            left, top, width, height
-        )
-
-    def finish_drag(self, x: float, y: float) -> None:
-        """Finish drawing the box."""
-        if self._drag_start is None:
-            return
-
-        self.update_drag(x, y)
         self._drag_start = None
 
-    def resize(self, width: float, height: float) -> None:
-        """Resize the current box."""
+    def set_frame(self, frame_id, dataset=None):
+        self.frame_id = str(frame_id)
+
+        if dataset is not None:
+            self.dataset = dataset
+
+    def start_drag(self, x: float, y: float):
+        self._drag_start = (float(x), float(y))
+
+    def update_drag(self, x: float, y: float):
+        if self._drag_start is None:
+            return None
+
+        x0, y0 = self._drag_start
+
+        left = min(x0, x)
+        top = min(y0, y)
+
+        width = abs(x - x0)
+        height = abs(y - y0)
+
+        if width <= 0 or height <= 0:
+            return None
+
+        return BoundingBox(
+            left,
+            top,
+            width,
+            height
+        )
+
+    def finish_drag(self, x: float, y: float):
+        box = self.update_drag(x, y)
+        self._drag_start = None
+
+        if box is None:
+            raise ValueError(
+                "Drag to create a box with positive width and height."
+            )
+
+        self.reference_object = ReferenceObject(
+            frame_id=self.frame_id,
+            bbox=box,
+            dataset=self.dataset
+        )
+
+        return self.reference_object
+
+    def resize(self, width: float, height: float):
         if self.reference_object is None:
-            raise ValueError("Create a reference box first.")
+            raise RuntimeError(
+                "Create a reference-object box before resizing."
+            )
 
-        self.reference_object.bbox.resize(width, height)
+        self.reference_object.bbox.resize(
+            width,
+            height
+        )
 
-    def remove(self, x: float, y: float) -> bool:
-        """Remove the box if the click falls inside it."""
-        obj = self.reference_object
-        if obj is None:
-            return False
+        return self.reference_object
 
-        box = obj.bbox
+    def move(self, x: float, y: float):
+        if self.reference_object is None:
+            raise RuntimeError(
+                "Create a reference-object box before moving."
+            )
 
+        self.reference_object.bbox.move(x, y)
+
+        return self.reference_object
+
+    def remove(self):
+        existed = self.reference_object is not None
+
+        self.reference_object = None
+        self._drag_start = None
+
+        return existed
+
+    def remove_at(self, x: float, y: float):
         if (
-            box.x <= x <= box.x + box.width
-            and box.y <= y <= box.y + box.height
+            self.reference_object is not None
+            and self.reference_object.bbox.contains(x, y)
         ):
-            self.reference_object = None
-            self._drag_start = None
-            return True
+            return self.remove()
 
         return False
 
-    def apply_to_frames(self, applier, frame_ids: Iterable[str]):
-        """Apply the current box to all supplied frames."""
+    def apply_to_frames(self, frame_ids: Iterable[str]):
         if self.reference_object is None:
-            raise ValueError("Create a reference box first.")
+            raise RuntimeError(
+                "No reference-object box exists to apply."
+            )
 
-        return applier.apply_to_frames(
-            self.reference_object,
-            frame_ids,
-        )
+        results = []
 
-    def to_dict(self) -> Optional[Dict]:
-        """Return the current box data."""
+        for frame_id in frame_ids:
+            obj = ReferenceObject(
+                frame_id=str(frame_id),
+                bbox=BoundingBox(
+                    **self.reference_object.bbox.to_dict()
+                ),
+                class_name=self.reference_object.class_name,
+                color=self.reference_object.color,
+                dataset=self.reference_object.dataset
+            )
+
+            results.append(obj)
+
+        return results
+
+    def to_dict(self):
         if self.reference_object is None:
             return None
 
