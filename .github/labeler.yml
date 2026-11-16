@@ -1,0 +1,20 @@
+feature:
+  - head-branch: ["^feature", "feature"]
+
+bug:
+  - head-branch: ["^bugfix", "bugfix"]
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file: "**/*.md"
+
+python:
+  - changed-files:
+      - any-glob-to-any-file: "**/*.py"
+
+github-actions:
+  - changed-files:
+      - any-glob-to-any-file: ".github/workflows/**"
+
+release:
+  - base-branch: "dev"
