@@ -1,0 +1,27 @@
+# .github/labeler.yml
+
+# File limit labels to 10
+changed-files-labels-limit: 10
+
+
+# Adds 'Documentation' label to any changes with the .md extension
+Documentation:
+  - changed-files:
+    - any-glob-to-any-file: '**/*.md'
+
+# Adds 'Source' label to files found in the source directory
+Source:
+  - changed-files:
+    - any-glob-to-any-file: 'src/**/*'
+
+# Adds 'Tests' label to files found in the test directory
+Tests:
+  - changed-files:
+    - any-glob-to-any-file: 'tests/**/*'
+
+# Adds 'Feature' label to files in the components and lib directories found in the src directory
+Feature:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'src/components/**'
+      - 'src/lib/**'
