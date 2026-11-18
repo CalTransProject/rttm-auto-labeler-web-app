@@ -2,26 +2,30 @@ changelog:
   exclude:
     labels:
       - ignore-for-release
+    authors:
+      - github-actions[bot]
 
   categories:
-    - title: "Breaking Changes"
-      labels:
-        - breaking-change
-
     - title: "New Features"
       labels:
-        - enhancement
         - feature
+        - enhancement
 
     - title: "Bug Fixes"
       labels:
         - bug
-        - bugfix
 
-    - title: "Documentation"
+    - title: "Improvements"
+      labels:
+        - improvement
+        - performance
+
+    - title: "Maintenance"
       labels:
         - documentation
+        - maintenance
 
     - title: "Other Changes"
       labels:
         - "*"
+
