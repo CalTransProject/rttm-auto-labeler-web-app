@@ -1,20 +1,22 @@
-feature:
-  - head-branch: ["^feature", "feature"]
-
-bug:
-  - head-branch: ["^bugfix", "bugfix"]
-
-documentation:
+"feature":
   - changed-files:
-      - any-glob-to-any-file: "**/*.md"
+      - any-glob-to-any-file:
+          - "src/auto_labeler/reference_object.py"
+          - "src/auto_labeler/reference_object_tool.py"
+          - "src/auto_labeler/reference_object_manager.py"
+          - "src/auto_labeler/reference_object_applier.py"
+          - "src/auto_labeler/reference_object_exporter.py"
+          - "src/auto_labeler/reference_object_workflow.py"
+          - "src/auto_labeler/reference_object_button.py"
+          - "src/auto_labeler/reference_object_ui.py"
 
-python:
+"improvement":
   - changed-files:
-      - any-glob-to-any-file: "**/*.py"
+      - any-glob-to-any-file:
+          - "src/auto_labeler/**"
 
-github-actions:
+"documentation":
   - changed-files:
-      - any-glob-to-any-file: ".github/workflows/**"
-
-release:
-  - base-branch: "dev"
+      - any-glob-to-any-file:
+          - "*.md"
+          - "docs/**"
