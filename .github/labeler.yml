@@ -15,9 +15,9 @@ Source:
     - any-glob-to-any-file: 'src/**/*'
 
 # Adds 'Tests' label to files found in the test directory
-Tests:
-  - changed-files:
-    - any-glob-to-any-file: 'tests/**/*'
+# Tests:
+#  - changed-files:
+#    - any-glob-to-any-file: 'tests/**/*'
 
 # Adds 'Feature' label to files in the components and lib directories found in the src directory
 Feature:
