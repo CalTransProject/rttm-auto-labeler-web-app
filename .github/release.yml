@@ -22,7 +22,7 @@ changelog:
 
     - title: Documentation
       labels:
-        -documentation
+        - documentation
 
     - title: Other Changes
       labels:
