@@ -16,15 +16,16 @@ const CLASS_COLORS: Record<string, string> = {
 	Cycle: '#0ea5e9',
 	Vehicle: '#111827',
 	Unknown: '#6b7280',
+	Object: '#FFD700',
 };
 
 const DEFAULT_ROI = {
-	xMin: -46.716694,
-	xMax: 24.280104,
-	yMin: -35.653854,
-	yMax: 14.18241987,
-	zMin: -2.7757624,
-	zMax: 3.57883,
+    xMin: -8.818163,
+    xMax: 56.849506,
+    yMin: -35.727375,
+    yMax: 17.382153,
+    zMin: -4.437168,
+    zMax: 12.733849,
 } as const;
 
 function FitOnFrameChange({ frameId }: { frameId: string | null }) {

@@ -27,7 +27,7 @@ function makePoints(n = 60000): Float32Array {
 }
 
 function makeInstances(frameId: string, k = 10): Instance[] {
-	const classes: ClassName[] = ['Sedan', 'SUV', 'Van', 'Truck', 'Bus', 'Cycle', 'Vehicle'];
+	const classes: ClassName[] = ['Sedan', 'SUV', 'Van', 'Truck', 'Bus', 'Cycle', 'Vehicle', 'Object'];
 	const out: Instance[] = [];
 	for (let i = 0; i < k; i++) {
 		const className = classes[Math.floor(Math.random() * classes.length)];

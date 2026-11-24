@@ -1,4 +1,4 @@
-export type ClassName = 'Sedan' | 'SUV' | 'Van' | 'Truck' | 'Bus' | 'Cycle' | 'Vehicle';
+export type ClassName = 'Sedan' | 'SUV' | 'Van' | 'Truck' | 'Bus' | 'Cycle' | 'Vehicle' | 'Object';
 
 export type Box3D = {
 	// Center + dims + yaw (radians)

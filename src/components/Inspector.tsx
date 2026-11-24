@@ -3,7 +3,7 @@
 import type { ClassName } from '@/lib/types';
 import { useReviewStore } from '@/store/useReviewStore';
 
-const CLASSES: ClassName[] = ['Sedan', 'SUV', 'Van', 'Truck', 'Bus', 'Cycle', 'Vehicle'];
+const CLASSES: ClassName[] = ['Sedan', 'SUV', 'Van', 'Truck', 'Bus', 'Cycle', 'Vehicle', "Object"];
 
 export function Inspector() {
 	const { currentFrame, toggleKept, relabel } = useReviewStore();

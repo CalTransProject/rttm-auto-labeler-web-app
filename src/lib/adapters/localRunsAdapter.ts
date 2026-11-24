@@ -39,7 +39,7 @@ const DEFAULT_INSTANCES_DIR = 'step1_6_results';
 
 // ---------- helpers ----------
 function isClassName(x: string): x is ClassName {
-	return ['Sedan', 'SUV', 'Van', 'Truck', 'Bus', 'Cycle', 'Vehicle'].includes(x);
+	return ['Sedan', 'SUV', 'Van', 'Truck', 'Bus', 'Cycle', 'Vehicle', 'Object'].includes(x);
 }
 
 function toClassName(x: string): ClassName {
