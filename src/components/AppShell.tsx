@@ -67,6 +67,34 @@ export function AppShell() {
 		await loadFrame(frames[nextIdx].frameId);
 	}
 
+	async function applyObjectToAllFrames() {
+		if(!currentFrame) return;
+
+		const sourceReference = currentFrame.instances.find((instance) => instance.className === 'Object' && instance.kept);
+
+		if(!sourceReference) {
+			setErr('Create an object first.');
+			return;
+		}
+
+		try {
+			setErr(null);
+			setMessage(null);
+			setIsLoading(true);
+
+			if(!adapter.applyObjectToAllFrames) {
+				throw new Error('This adapter does not support applying an object');
+			}
+
+			setCurrentFrame(await adapter.loadFrame(currentFrame.frameId));
+			setMessage('Object applied to ${count} frames.');
+		} catch (error: unkown) {
+			setErr(error instanceof Error ? error.message : String(error))
+		} finally {
+			setIsLoading(false);
+		}
+	}
+
 	async function saveFrame() {
 		if (!currentFrame) return;
 		try {
@@ -124,8 +152,8 @@ export function AppShell() {
 						Finish / Export
 					</button>
 
-					<button className='px-3 py-1.5 rounded-md bg-amber-700 hover:bg-amber-600 text-sm disabled:opacity-50' disabled>
-						Apply Reference Object To All Frames
+					<button className='px-3 py-1.5 rounded-md bg-amber-700 hover:bg-amber-600 text-sm disabled:opacity-50' onClick={() => void applyObjectToAllFrames()} disabled={!runOpened || !currentFrame || !currentFrame.instances.some((instance) => instance.className === 'Object' && instance.kept) || isLoading }>
+						Apply Object To All Frames
 					</button>
 				</div>
 			</div>
